@@ -1,9 +1,22 @@
 {
     "questions": [
         {
-            "question" : "question 1",
-            "answer" : "A",
-            "choices" : ["A", "B", "C", "D"]
+            "id" : 1,
+            "question" : "React Native est un : ",
+            "answer" : "framework ",
+            "choices" : [ "library", "language de programmation", "framework ","langage de requêtes structurées"]
+        },
+        {
+            "id" : 2,
+            "question" : "SQL serve à :",
+            "answer" : "exploiter des bases de données relationnelles",
+            "choices" : ["exploiter des fichiers XML", "exploiter des structures de données", "exploiter des bases de données relationnelles", "exploiter des fichiers text"]
+        },
+        {
+            "id" : 3,
+            "question" : "Quel est le principal rôle du PHP ?",
+            "answer" : "PHP est principalement conçu pour servir de langage de script coté serveur",
+            "choices" : ["PHP est principalement conçu pour servir de langage de script coté serveur", "manipuler les elements de la page.", " d'aborder le développement sous plusieurs paradigmes", "analyse de données"]
         }
     ]
 }

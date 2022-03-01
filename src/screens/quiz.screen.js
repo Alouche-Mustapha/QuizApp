@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Dimensions,
   ImageBackground,
   SafeAreaView,
   StatusBar,
-  Text,
 } from "react-native";
 
 import styled from "styled-components/native";
+import { QuestionComponent } from "../components/question.component";
+import { QuestionsContext } from "../services/questions.context";
 
 const Container = styled(SafeAreaView)`
   flex: 1;
   padding-top: ${StatusBar.currentHeight + 0}px;
+  justify-content: center;
 `;
 
 const ImgBackground = styled(ImageBackground).attrs({
@@ -23,10 +25,12 @@ const ImgBackground = styled(ImageBackground).attrs({
 `;
 
 export const QuizScreen = () => {
+  const { questions } = useContext(QuestionsContext);
+
   return (
     <Container>
       <ImgBackground />
-      <Text style={{ color: "white" }}>WOOOOOOOW</Text>
+      <QuestionComponent questions={questions} length={questions.length} />
     </Container>
   );
 };

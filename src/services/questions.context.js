@@ -10,9 +10,6 @@ export const QuestionsContextProvider = ({ children }) => {
     quizRequest()
       .then((questions) => {
         setQuestions(questions);
-        console.log("====================================");
-        console.log(questions);
-        console.log("====================================");
       })
       .catch((err) => {
         console.log(err);
