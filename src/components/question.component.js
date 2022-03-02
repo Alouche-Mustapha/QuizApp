@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
 import { Alert, TouchableOpacity, Text, Dimensions } from "react-native";
 import { Card, Button } from "react-native-paper";
 
@@ -52,9 +52,8 @@ const Choice = styled.Text`
 
 export const QuestionComponent = ({ questions = {}, length }) => {
   const [index, setIndex] = useState(0);
-  const [clicked1, setClicked1] = useState(false);
   const [userAnswer, setUserAnswer] = useState();
-  const [score, setScore] = useState(0);
+  const score = useRef(0);
 
   const {
     id = 1,
@@ -64,18 +63,10 @@ export const QuestionComponent = ({ questions = {}, length }) => {
   } = questions[index];
 
   const nextQuestion = () => {
+    if (userAnswer === answer) score.current++;
     if (index < length - 1) {
-      let i = index + 1;
-      setIndex(i);
-      setClicked1(false);
-    }
-    //  else {
-    //   Alert.alert("Result : ", "Score : " + score, [{ ok: () => null }]);
-    // }
-    if (userAnswer == answer) setScore(score + 1);
-    console.log("userAnswer: " + userAnswer);
-    console.log("score: " + score);
-    console.log("answer: " + answer);
+      setIndex(index + 1);
+    } else Alert.alert("info", "score : " + score.current);
   };
 
   return (
@@ -85,7 +76,6 @@ export const QuestionComponent = ({ questions = {}, length }) => {
         <FadeAnim>
           {choices.map((item, index) => (
             <ChoiceContainer
-              style={clicked1 && { backgroundColor: "gray" }}
               onPress={() => {
                 setUserAnswer(choices[index]);
               }}
