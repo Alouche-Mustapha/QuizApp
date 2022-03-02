@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Alert, Pressable, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, TouchableOpacity, Text, Dimensions } from "react-native";
 import { Card, Button } from "react-native-paper";
 
 import styled from "styled-components/native";
@@ -11,13 +11,23 @@ const QuestionCard = styled(Card)`
 `;
 
 const QuestionTitle = styled(Card.Title).attrs({
-  titleStyle: { color: "white", fontSize: 30 },
+  titleStyle: {
+    color: "white",
+    fontSize: Dimensions.get("screen").width * 0.05,
+    maxWidth: "80%",
+    flexWrap: "wrap",
+    flexDirection: "row",
+  },
   subtitleStyle: { color: "white", fontSize: 15 },
 })`
   margin-vertical: 30px;
 `;
 
-const QuestionContent = styled(Card.Content)``;
+const QuestionContent = styled(Card.Content)`
+  height: 50%;
+  justify-content: center;
+  margin-vertical: 10px;
+`;
 
 const SubmitQuestion = styled(Card.Actions)`
   align-items: center;
@@ -25,7 +35,7 @@ const SubmitQuestion = styled(Card.Actions)`
   margin-vertical: 30px;
 `;
 
-const ChoiceContainer = styled(Pressable)`
+const ChoiceContainer = styled(TouchableOpacity)`
   border-width: 5px;
   border-color: black;
   border-radius: 15px;
@@ -35,7 +45,7 @@ const ChoiceContainer = styled(Pressable)`
 
 const Choice = styled.Text`
   color: white;
-  font-size: 20px;
+  font-size: ${Dimensions.get("screen").width * 0.05}px;
   text-align: center;
   font-weight: bold;
 `;
@@ -43,11 +53,9 @@ const Choice = styled.Text`
 export const QuestionComponent = ({ questions = {}, length }) => {
   const [index, setIndex] = useState(0);
   const [clicked1, setClicked1] = useState(false);
-  const [clicked2, setClicked2] = useState(false);
-  const [clicked3, setClicked3] = useState(false);
-  const [clicked4, setClicked4] = useState(false);
-  const [userAnswer, setUserAnswer] = useState("");
+  const [userAnswer, setUserAnswer] = useState();
   const [score, setScore] = useState(0);
+
   const {
     id = 1,
     question = "some question",
@@ -59,20 +67,15 @@ export const QuestionComponent = ({ questions = {}, length }) => {
     if (index < length - 1) {
       let i = index + 1;
       setIndex(i);
-      setClicked2(false);
-      setClicked3(false);
-      setClicked4(false);
       setClicked1(false);
-      if (userAnswer === answer) {
-        let s = score + 1;
-        setScore(s);
-        console.log("====================================");
-        console.log(s);
-        console.log("====================================");
-      }
-    } else {
-      Alert.alert("Result : ", "Score : " + score, [{ ok: () => null }]);
     }
+    //  else {
+    //   Alert.alert("Result : ", "Score : " + score, [{ ok: () => null }]);
+    // }
+    if (userAnswer == answer) setScore(score + 1);
+    console.log("userAnswer: " + userAnswer);
+    console.log("score: " + score);
+    console.log("answer: " + answer);
   };
 
   return (
@@ -80,54 +83,17 @@ export const QuestionComponent = ({ questions = {}, length }) => {
       <QuestionTitle subtitle={id + "/" + length} title={question} />
       <QuestionContent>
         <FadeAnim>
-          <ChoiceContainer
-            style={clicked1 && { backgroundColor: "gray" }}
-            onPress={() => {
-              setClicked1(!clicked1);
-              setClicked2(false);
-              setClicked3(false);
-              setClicked4(false);
-              setUserAnswer(choices[0]);
-            }}
-          >
-            <Choice>{choices[0]}</Choice>
-          </ChoiceContainer>
-          <ChoiceContainer
-            style={clicked2 && { backgroundColor: "gray" }}
-            onPress={() => {
-              setClicked2(!clicked2);
-              setClicked1(false);
-              setClicked3(false);
-              setClicked4(false);
-              setUserAnswer(choices[1]);
-            }}
-          >
-            <Choice>{choices[1]}</Choice>
-          </ChoiceContainer>
-          <ChoiceContainer
-            style={clicked3 && { backgroundColor: "gray" }}
-            onPress={() => {
-              setClicked3(!clicked3);
-              setClicked2(false);
-              setClicked1(false);
-              setClicked4(false);
-              setUserAnswer(choices[2]);
-            }}
-          >
-            <Choice>{choices[2]}</Choice>
-          </ChoiceContainer>
-          <ChoiceContainer
-            style={clicked4 && { backgroundColor: "gray" }}
-            onPress={() => {
-              setClicked4(!clicked4);
-              setClicked2(false);
-              setClicked3(false);
-              setClicked1(false);
-              setUserAnswer(choices[3]);
-            }}
-          >
-            <Choice>{choices[3]}</Choice>
-          </ChoiceContainer>
+          {choices.map((item, index) => (
+            <ChoiceContainer
+              style={clicked1 && { backgroundColor: "gray" }}
+              onPress={() => {
+                setUserAnswer(choices[index]);
+              }}
+              key={index}
+            >
+              <Choice>{item}</Choice>
+            </ChoiceContainer>
+          ))}
         </FadeAnim>
       </QuestionContent>
       <SubmitQuestion>
