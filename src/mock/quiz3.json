@@ -1,0 +1,17 @@
+{
+    "name" : "HTML",
+    "questions": [
+        {
+            "id" : 1,
+            "question" : "HTML",
+            "answer" : "Hypertext Markup Language",
+            "choices" : ["Hypertext Markup Language", "Home Tool Markup Language", "Hyperlink and Text Markup Language "]
+        },
+        {
+            "id" : 2,
+            "question" : "Pour créer un lien hypertexte",
+            "answer" : "<a href=https://example.com>Website</a>",
+            "choices" : ["<a href=https://example.com>Website</a>", "<a href=https://example.com Website />", "<a>https://example.comWebsite</a>"]
+        }
+    ]
+}

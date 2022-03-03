@@ -1,0 +1,23 @@
+{
+    "name" : "Angular",
+    "questions": [
+        {
+            "id" : 1,
+            "question" : "Angular est un ",
+            "answer" : "framework côté client",
+            "choices" : ["une plateforme logicielle libre", "framework côté client", "le gestionnaire de paquets par défaut"]
+        },
+        {
+            "id" : 2,
+            "question" : "Rôle de angular",
+            "answer" : "permet la création d'applications Web",
+            "choices" : ["conçu pour servir de langage de script coté serveur", "permettant de construire des applications natives", "permet la création d'applications Web"]
+        },
+        {
+            "id" : 3,
+            "question" : "Développé par",
+            "answer" : "Google",
+            "choices" : ["Google","Facebook","Oracle"]
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   Dimensions,
   ImageBackground,
@@ -8,7 +8,6 @@ import {
 
 import styled from "styled-components/native";
 import { QuestionComponent } from "../components/question.component";
-import { QuestionsContext } from "../services/questions.context";
 
 const Container = styled(SafeAreaView)`
   flex: 1;
@@ -24,13 +23,17 @@ const ImgBackground = styled(ImageBackground).attrs({
   height: ${Dimensions.get("screen").height}px;
 `;
 
-export const QuizScreen = () => {
-  const { questions } = useContext(QuestionsContext);
+export const QuizScreen = ({ navigation, route }) => {
+  const { quiz } = route.params;
 
   return (
     <Container>
       <ImgBackground />
-      <QuestionComponent questions={questions} length={questions.length} />
+      <QuestionComponent
+        questions={quiz.questions}
+        length={quiz.questions.length}
+        navigation={navigation}
+      />
     </Container>
   );
 };

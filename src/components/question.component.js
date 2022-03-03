@@ -1,103 +1,151 @@
-import React, { useState, useRef } from "react";
-import { Alert, TouchableOpacity, Text, Dimensions } from "react-native";
-import { Card, Button } from "react-native-paper";
+import React, { useState, useRef, useEffect } from "react";
+import { Alert, Pressable, Text, Dimensions } from "react-native";
+import { Card, Button, ProgressBar } from "react-native-paper";
 
 import styled from "styled-components/native";
 import { FadeAnim } from "../features/fade.animation";
 
 const QuestionCard = styled(Card)`
-  background-color: #0f3555aa;
+  height: ${Dimensions.get("screen").height * 0.8}px;
+  background-color: #0f3555a0;
   margin-horizontal: 30px;
+  border-radius: 30px;
+  margin-top: 20px;
 `;
 
 const QuestionTitle = styled(Card.Title).attrs({
   titleStyle: {
     color: "white",
-    fontSize: Dimensions.get("screen").width * 0.05,
+    fontSize: Dimensions.get("screen").height * 0.025,
     maxWidth: "80%",
-    flexWrap: "wrap",
-    flexDirection: "row",
   },
+  titleNumberOfLines: 3,
   subtitleStyle: { color: "white", fontSize: 15 },
 })`
   margin-vertical: 30px;
 `;
 
 const QuestionContent = styled(Card.Content)`
-  height: 50%;
-  justify-content: center;
+  flex: 1;
+  justify-content: space-around;
   margin-vertical: 10px;
 `;
 
 const SubmitQuestion = styled(Card.Actions)`
   align-items: center;
   justify-content: center;
-  margin-vertical: 30px;
 `;
 
-const ChoiceContainer = styled(TouchableOpacity)`
+const ChoiceContainer = styled(Pressable)`
   border-width: 5px;
   border-color: black;
   border-radius: 15px;
   margin-bottom: 10px;
   padding: 10px;
+  background-color: #2596beaa;
 `;
 
 const Choice = styled.Text`
   color: white;
-  font-size: ${Dimensions.get("screen").width * 0.05}px;
+  font-size: ${Dimensions.get("screen").height * 0.025}px;
   text-align: center;
   font-weight: bold;
 `;
 
-export const QuestionComponent = ({ questions = {}, length }) => {
+export const QuestionComponent = ({ questions = [], length, navigation }) => {
   const [index, setIndex] = useState(0);
+  const progress = useRef(1);
   const [userAnswer, setUserAnswer] = useState();
+  const pressed = useRef([]);
   const score = useRef(0);
 
   const {
     id = 1,
     question = "some question",
     answer = "aswer X",
-    choices = ["X1", "X2", "X3", "X4"],
+    choices = ["Xdef", "Xdef2", "Xdef3", "Xdef4"],
   } = questions[index];
 
   const nextQuestion = () => {
-    if (userAnswer === answer) score.current++;
+    if (userAnswer === answer && score.current < length) {
+      score.current++;
+    }
     if (index < length - 1) {
       setIndex(index + 1);
-    } else Alert.alert("info", "score : " + score.current);
+      pressed.current.map((_, index) => (pressed.current[index] = false));
+    } else {
+      Alert.alert("Result : ", "score : " + score.current + " / " + length, [
+        {
+          text: "Home",
+          onPress: () => navigation.navigate("welcome"),
+        },
+      ]);
+    }
   };
 
+  useEffect(() => {
+    setTimeout(() => {
+      nextQuestion();
+    }, 2000);
+  }, [index]);
+  setInterval((progress.current -= 0.1), 2000);
   return (
-    <QuestionCard>
-      <QuestionTitle subtitle={id + "/" + length} title={question} />
-      <QuestionContent>
-        <FadeAnim>
-          {choices.map((item, index) => (
-            <ChoiceContainer
-              onPress={() => {
-                setUserAnswer(choices[index]);
+    <>
+      <FadeAnim>
+        <ProgressBar
+          style={{ height: 10, marginHorizontal: 10, borderRadius: 15 }}
+          progress={progress.current}
+          color={"#18C4FF"}
+        />
+      </FadeAnim>
+
+      <QuestionCard>
+        <QuestionTitle subtitle={id + "/" + length} title={question} />
+        <QuestionContent>
+          <FadeAnim>
+            {choices.map((item, index) => {
+              pressed.current.push(false);
+              return (
+                <ChoiceContainer
+                  style={{
+                    borderColor: pressed.current[index] ? "#18C4FF" : null,
+                  }}
+                  onPress={() => {
+                    setUserAnswer(choices[index]);
+                    pressed.current.map((_, i) =>
+                      i === index
+                        ? (pressed.current[i] = true)
+                        : (pressed.current[i] = false)
+                    );
+                  }}
+                  key={index}
+                >
+                  <Choice>{item}</Choice>
+                </ChoiceContainer>
+              );
+            })}
+          </FadeAnim>
+        </QuestionContent>
+        <SubmitQuestion>
+          <Button
+            onPress={nextQuestion}
+            mode="contained"
+            style={{
+              width: "60%",
+              backgroundColor: "#2481ce",
+              marginBottom: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: Dimensions.get("screen").height * 0.025,
               }}
-              key={index}
             >
-              <Choice>{item}</Choice>
-            </ChoiceContainer>
-          ))}
-        </FadeAnim>
-      </QuestionContent>
-      <SubmitQuestion>
-        <Button
-          onPress={nextQuestion}
-          mode="contained"
-          style={{
-            width: "80%",
-            backgroundColor: "#2481ce",
-          }}
-        >
-          <Text style={{ fontSize: 20 }}>NEXT</Text>
-        </Button>
-      </SubmitQuestion>
-    </QuestionCard>
+              NEXT
+            </Text>
+          </Button>
+        </SubmitQuestion>
+      </QuestionCard>
+    </>
   );
 };
