@@ -54,7 +54,7 @@ const Choice = styled.Text`
 
 export const QuestionComponent = ({ questions = [], length, navigation }) => {
   const [index, setIndex] = useState(0);
-  const progress = useRef(1);
+  const [progress, setProgress] = useState(0);
   const [userAnswer, setUserAnswer] = useState();
   const pressed = useRef([]);
   const score = useRef(0);
@@ -67,6 +67,7 @@ export const QuestionComponent = ({ questions = [], length, navigation }) => {
   } = questions[index];
 
   const nextQuestion = () => {
+    setProgress(progress + 1 / length);
     if (userAnswer === answer && score.current < length) {
       score.current++;
     }
@@ -83,18 +84,12 @@ export const QuestionComponent = ({ questions = [], length, navigation }) => {
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      nextQuestion();
-    }, 2000);
-  }, [index]);
-  setInterval((progress.current -= 0.1), 2000);
   return (
     <>
       <FadeAnim>
         <ProgressBar
           style={{ height: 10, marginHorizontal: 10, borderRadius: 15 }}
-          progress={progress.current}
+          progress={progress}
           color={"#18C4FF"}
         />
       </FadeAnim>
