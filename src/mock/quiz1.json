@@ -1,23 +1,41 @@
 {
-    "name" : "React Native",
+    "name" : "React",
     "questions": [
         {
             "id" : 1,
-            "question" : "React Native est un : ",
-            "answer" : "framework ",
-            "choices" : [ "library", "language de programmation", "framework ","langage de requêtes structurées"]
+            "question" : "What is the correct command to create a new React project?",
+            "answer" : "npx create-react-app myReactApp",
+            "choices" : [ "npx create-react-app", "npm create-react-app", "npm create-react-app myReactApp ","npx create-react-app myReactApp"]
         },
         {
             "id" : 2,
-            "question" : "SQL serve à :",
-            "answer" : "exploiter des bases de données relationnelles",
-            "choices" : ["exploiter des fichiers XML", "exploiter des structures de données", "exploiter des bases de données relationnelles", "exploiter des fichiers text"]
+            "question" : "What does myReactApp refer to in the following command?",
+            "answer" : "The name you want to use for the new app",
+            "choices" : ["The type of app to create", "The name you want to use for the new app", "The directory to create the new app in"]
         },
         {
             "id" : 3,
-            "question" : "Quel est le principal rôle du PHP ?",
-            "answer" : "PHP est principalement conçu pour servir de langage de script coté serveur",
-            "choices" : ["PHP est principalement conçu pour servir de langage de script coté serveur", "manipuler les elements de la page.", " d'aborder le développement sous plusieurs paradigmes", "analyse de données"]
+            "question" : "What command is used to start the React local development server?",
+            "answer" : "npm start",
+            "choices" : ["npm run dev", "npm build", "npm start", "npm serve"]
+        },
+        {
+            "id" : 4,
+            "question" : "What is the children prop?",
+            "answer" : "A property that lets you nest components in other components",
+            "choices" : ["A property that lets you pass data to child components", "A property that lets you set an object as a property", "A property that adds child values to state", "A property that lets you nest components in other components"]
+        },
+        {
+            "id" : 5,
+            "question" : "Which keyword creates a constant in JavaScript?",
+            "answer" : "const",
+            "choices" : ["const", "var", "constant", "let"]
+        },
+        {
+            "id" : 6,
+            "question" : "A copy of the 'real' DOM that is kept in memory is called what?",
+            "answer" : "Virtual DOM",
+            "choices" : ["Shadow DOM", "Virtual DOM", "DOM", "React DOM"]
         }
     ]
 }
