@@ -1,8 +1,9 @@
-import React from "react";
-import { Dimensions, SafeAreaView, StatusBar } from "react-native";
+import React, { useContext } from "react";
+import { Dimensions, SafeAreaView, StatusBar, Text, View } from "react-native";
 import { Button } from "react-native-paper";
-
 import styled from "styled-components/native";
+
+import { QuizsContext } from "../services/quizs.context";
 
 const Container = styled(SafeAreaView)`
   flex: 1;
@@ -14,8 +15,15 @@ const Container = styled(SafeAreaView)`
 const Title = styled.Text`
   color: white;
   font-family: Comforter_400Regular;
-  font-size: 50px;
+  font-size: 80px;
   text-align: center;
+`;
+
+const SubTitle = styled.Text`
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
 `;
 
 const BackgroundContainer = styled.View`
@@ -36,14 +44,26 @@ const ModuleButton = styled(Button).attrs({
 `;
 
 export const WelcomeScreen = ({ navigation }) => {
+  const { quizs } = useContext(QuizsContext);
+
   return (
     <Container>
       <Title>Quiz App</Title>
-      <BackgroundContainer>
-        <ModuleButton onPress={() => navigation.navigate("quiz")}>
-          Start Quiz
-        </ModuleButton>
-      </BackgroundContainer>
+      <View>
+        <SubTitle>Select a quiz to start</SubTitle>
+        <BackgroundContainer>
+          {quizs.map((item, index) => (
+            <ModuleButton
+              key={index}
+              onPress={() => navigation.navigate("quiz", { quiz: item })}
+            >
+              <Text style={{ fontFamily: "Oswald_500Medium" }}>
+                {item.name}
+              </Text>
+            </ModuleButton>
+          ))}
+        </BackgroundContainer>
+      </View>
     </Container>
   );
 };

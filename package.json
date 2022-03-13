@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@expo-google-fonts/comforter": "^0.2.2",
+    "@expo-google-fonts/dancing-script": "^0.2.2",
+    "@expo-google-fonts/oswald": "^0.2.2",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
+    "@types/react": "^17.0.40",
     "expo": "~44.0.0",
     "expo-font": "~10.0.4",
     "expo-status-bar": "~1.2.0",

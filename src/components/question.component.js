@@ -1,30 +1,34 @@
 import React, { useState, useRef } from "react";
-import { Alert, TouchableOpacity, Text, Dimensions } from "react-native";
-import { Card, Button } from "react-native-paper";
+import { Alert, Text, Dimensions, Pressable, View } from "react-native";
+import { Card, Button, ProgressBar } from "react-native-paper";
 
 import styled from "styled-components/native";
 import { FadeAnim } from "../features/fade.animation";
 
+const screenWidth = Dimensions.get("screen").width;
+const screenHeight = Dimensions.get("screen").height;
+
 const QuestionCard = styled(Card)`
+  flex: 1;
+  justify-content: space-between;
   background-color: #0f3555aa;
   margin-horizontal: 30px;
+  margin-top: 10px;
 `;
 
 const QuestionTitle = styled(Card.Title).attrs({
   titleStyle: {
     color: "white",
     fontSize: Dimensions.get("screen").width * 0.05,
-    maxWidth: "80%",
-    flexWrap: "wrap",
-    flexDirection: "row",
   },
   subtitleStyle: { color: "white", fontSize: 15 },
+  titleNumberOfLines: 2,
 })`
   margin-vertical: 30px;
 `;
 
 const QuestionContent = styled(Card.Content)`
-  height: 50%;
+  flex: 1;
   justify-content: center;
   margin-vertical: 10px;
 `;
@@ -35,7 +39,7 @@ const SubmitQuestion = styled(Card.Actions)`
   margin-vertical: 30px;
 `;
 
-const ChoiceContainer = styled(TouchableOpacity)`
+const ChoiceContainer = styled(Pressable)`
   border-width: 5px;
   border-color: black;
   border-radius: 15px;
@@ -45,59 +49,85 @@ const ChoiceContainer = styled(TouchableOpacity)`
 
 const Choice = styled.Text`
   color: white;
-  font-size: ${Dimensions.get("screen").width * 0.05}px;
+  font-size: ${screenHeight * 0.025}px;
   text-align: center;
   font-weight: bold;
 `;
 
-export const QuestionComponent = ({ questions = {}, length }) => {
+export const QuestionComponent = ({ questions = {}, length, navigation }) => {
   const [index, setIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [userAnswer, setUserAnswer] = useState();
+  const pressed = useRef([]);
   const score = useRef(0);
 
-  const {
-    id = 1,
-    question = "some question",
-    answer = "aswer X",
-    choices = ["X1", "X2", "X3", "X4"],
-  } = questions[index];
+  const { id = 0, question = "", answer = "", choices = [] } = questions[index];
 
   const nextQuestion = () => {
-    if (userAnswer === answer) score.current++;
+    setProgress(progress + 1 / length);
     if (index < length - 1) {
+      if (answer === userAnswer) score.current++;
       setIndex(index + 1);
-    } else Alert.alert("info", "score : " + score.current);
+      pressed.current.map((v, i) => {
+        pressed.current[i] = false;
+      });
+    } else {
+      if (answer === userAnswer) score.current++;
+      Alert.alert(
+        score.current >= length / 2 ? "Quiz passé" : "Quiz échoué",
+        "score : " + score.current,
+        [{ text: "Home", onPress: () => navigation.navigate("welcome") }]
+      );
+    }
   };
 
   return (
-    <QuestionCard>
-      <QuestionTitle subtitle={id + "/" + length} title={question} />
-      <QuestionContent>
-        <FadeAnim>
-          {choices.map((item, index) => (
-            <ChoiceContainer
-              onPress={() => {
-                setUserAnswer(choices[index]);
-              }}
-              key={index}
-            >
-              <Choice>{item}</Choice>
-            </ChoiceContainer>
-          ))}
-        </FadeAnim>
-      </QuestionContent>
-      <SubmitQuestion>
-        <Button
-          onPress={nextQuestion}
-          mode="contained"
-          style={{
-            width: "80%",
-            backgroundColor: "#2481ce",
-          }}
-        >
-          <Text style={{ fontSize: 20 }}>NEXT</Text>
-        </Button>
-      </SubmitQuestion>
-    </QuestionCard>
+    <View style={{ flex: 0.9 }}>
+      <ProgressBar
+        style={{ height: 10, marginHorizontal: 20, borderRadius: 20 }}
+        progress={progress}
+        color="#185eb5"
+      />
+      <QuestionCard>
+        <QuestionTitle subtitle={id + "/" + length} title={question} />
+        <QuestionContent>
+          <FadeAnim>
+            {choices.map((item, index) => {
+              pressed.current.push(false);
+              return (
+                <ChoiceContainer
+                  style={{
+                    borderColor: pressed.current[index] ? "#185eb5" : null,
+                  }}
+                  onPress={() => {
+                    pressed.current.map((_, i) => {
+                      i === index
+                        ? (pressed.current[i] = true)
+                        : (pressed.current[i] = false);
+                    });
+                    setUserAnswer(choices[index]);
+                  }}
+                  key={index}
+                >
+                  <Choice>{item}</Choice>
+                </ChoiceContainer>
+              );
+            })}
+          </FadeAnim>
+        </QuestionContent>
+        <SubmitQuestion>
+          <Button
+            onPress={nextQuestion}
+            mode="contained"
+            style={{
+              width: "60%",
+              backgroundColor: "#2481ce",
+            }}
+          >
+            <Text style={{ fontSize: screenWidth * 0.04 }}>NEXT</Text>
+          </Button>
+        </SubmitQuestion>
+      </QuestionCard>
+    </View>
   );
 };
