@@ -1,13 +1,14 @@
 import { createContext, useEffect, useState } from "react";
-import { quizRequest } from "./questions.service";
+import { quizRequest, quizTransform } from "./questions.service";
 
 export const QuestionsContext = createContext();
 
 export const QuestionsContextProvider = ({ children }) => {
-  const [questions, setQuestions] = useState([]);
+  const [quizs, setQuestions] = useState([]);
 
   const retieveQuestions = () => {
     quizRequest()
+      .then(quizTransform)
       .then((questions) => {
         setQuestions(questions);
       })
@@ -21,7 +22,7 @@ export const QuestionsContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <QuestionsContext.Provider value={{ questions }}>
+    <QuestionsContext.Provider value={{ quizs }}>
       {children}
     </QuestionsContext.Provider>
   );

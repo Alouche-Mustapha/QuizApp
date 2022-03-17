@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Dimensions, SafeAreaView, StatusBar } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import { Dimensions, SafeAreaView, StatusBar, Text } from "react-native";
 import { Button } from "react-native-paper";
 
 import styled from "styled-components/native";
@@ -46,7 +46,12 @@ const ModuleButton = styled(Button).attrs({
 `;
 
 export const WelcomeScreen = ({ navigation }) => {
-  const { questions } = useContext(QuestionsContext);
+  const { quizs } = useContext(QuestionsContext);
+  // const [quizLength, setQuizLength] = useState(quizs.length);
+
+  // useEffect(() => {
+  //   setQuizLength(quizs.length);
+  // }, [quizs.length]);
 
   return (
     <Container>
@@ -55,14 +60,18 @@ export const WelcomeScreen = ({ navigation }) => {
         <Description>Here you can test your knowledge</Description>
       </TopContainer>
       <BackgroundContainer>
-        {questions.map((item, index) => (
-          <ModuleButton
-            key={index}
-            onPress={() => navigation.navigate("quizReact", { quiz: item })}
-          >
-            {item.name}
-          </ModuleButton>
-        ))}
+        {quizs.length != 0 ? (
+          quizs.map((item, index) => (
+            <ModuleButton
+              key={index}
+              onPress={() => navigation.navigate("quizReact", { quiz: item })}
+            >
+              {item.name}
+            </ModuleButton>
+          ))
+        ) : (
+          <Text>The server is not working</Text>
+        )}
       </BackgroundContainer>
     </Container>
   );

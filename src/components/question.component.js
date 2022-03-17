@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Alert, Pressable, Text, Dimensions } from "react-native";
-import { Card, Button, ProgressBar } from "react-native-paper";
+import { Alert, Pressable, Dimensions, View, Modal, Text } from "react-native";
+import { Card, ProgressBar } from "react-native-paper";
+
+import { Button } from "react-native-elements";
 
 import styled from "styled-components/native";
 import { FadeAnim } from "../features/fade.animation";
@@ -58,6 +60,21 @@ export const QuestionComponent = ({ questions = [], length, navigation }) => {
   const [userAnswer, setUserAnswer] = useState();
   const pressed = useRef([]);
   const score = useRef(0);
+  const stop = useRef(0);
+
+  useEffect(() => {
+    let subs = true;
+    if (progress < 1 && stop.current < length) {
+      setTimeout(() => {
+        if (subs) {
+          setProgress(progress + 0.1);
+        }
+      }, 500);
+    } else nextQuestion();
+    return () => {
+      subs = false;
+    };
+  }, [progress]);
 
   const {
     id = 1,
@@ -67,30 +84,23 @@ export const QuestionComponent = ({ questions = [], length, navigation }) => {
   } = questions[index];
 
   const nextQuestion = () => {
-    setProgress(progress + 1 / length);
+    stop.current++;
+    setProgress(0);
     if (userAnswer === answer && score.current < length) {
       score.current++;
     }
     if (index < length - 1) {
       setIndex(index + 1);
       pressed.current.map((_, index) => (pressed.current[index] = false));
-    } else {
-      Alert.alert("Result : ", "score : " + score.current + " / " + length, [
-        {
-          text: "Home",
-          onPress: () => navigation.navigate("welcome"),
-        },
-      ]);
     }
   };
-
   return (
     <>
       <FadeAnim>
         <ProgressBar
           style={{ height: 10, marginHorizontal: 10, borderRadius: 15 }}
           progress={progress}
-          color={"#18C4FF"}
+          color={progress > 0.7 ? "red" : "#18C4FF"}
         />
       </FadeAnim>
 
@@ -123,24 +133,95 @@ export const QuestionComponent = ({ questions = [], length, navigation }) => {
         </QuestionContent>
         <SubmitQuestion>
           <Button
-            onPress={nextQuestion}
-            mode="contained"
-            style={{
-              width: "60%",
-              backgroundColor: "#2481ce",
-              marginBottom: 10,
+            title="NEXT"
+            disabled={progress < 0.1}
+            loading={false}
+            loadingProps={{ size: "small", color: "white" }}
+            icon={{
+              name: "arrow-right",
+              type: "font-awesome",
+              size: 15,
+              color: "white",
             }}
-          >
-            <Text
-              style={{
-                fontSize: Dimensions.get("screen").height * 0.025,
-              }}
-            >
-              NEXT
-            </Text>
-          </Button>
+            iconRight
+            buttonStyle={{
+              backgroundColor: "#2481ce",
+              borderRadius: 25,
+            }}
+            titleStyle={{
+              fontWeight: "bold",
+              fontSize: Dimensions.get("screen").height * 0.025,
+            }}
+            containerStyle={{
+              marginHorizontal: 50,
+              width: 200,
+              marginVertical: 10,
+            }}
+            onPress={nextQuestion}
+          />
         </SubmitQuestion>
       </QuestionCard>
+
+      {stop.current == length && (
+        <Modal animationType="slide" transparent={true} visible={true}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#0f3555ab",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: "90%",
+                borderRadius: 20,
+                padding: 20,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                }}
+              >
+                {score > length / 2 ? "Congratulation" : "Oops!"}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  marginVertical: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 30,
+                    color: score.current > length / 2 ? "green" : "red",
+                  }}
+                >
+                  {score.current}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: "black",
+                  }}
+                >
+                  / {length}
+                </Text>
+              </View>
+              <Button
+                title="Home"
+                onPress={() => navigation.navigate("welcome")}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
     </>
   );
 };
